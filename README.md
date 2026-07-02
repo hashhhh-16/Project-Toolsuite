@@ -121,6 +121,51 @@ The script automatically:
 
 ---
 
+## Tool Health Checker
+
+The Tool Health Checker is a client-side maintenance utility designed to validate registered tools and identify common project issues.
+
+### Checks Performed
+
+- Validates registered tool page paths from the project registry
+- Detects missing or unreachable tool pages
+- Verifies `theme.css` inclusion
+- Verifies `theme.js` inclusion
+- Generates a downloadable JSON report
+- Provides a human-readable scan summary
+
+### Usage
+
+1. Open **Tool Health Checker** from the homepage.
+2. Click **Run Health Scan**.
+3. Review the scan summary and results table.
+4. Download the JSON report for maintenance or debugging purposes.
+
+### Example Summary
+
+```text
+Tools Scanned: 56
+Pages Missing: 0
+Missing Theme CSS: 0
+Missing Theme JS: 0
+```
+
+### JSON Report Example
+
+```json
+{
+  "tool": "JSON Formatter",
+  "path": "tools/json-formatter/json-formatter.html",
+  "pageStatus": "PASS",
+  "cssStatus": "PASS",
+  "jsStatus": "PASS"
+}
+```
+
+The Health Checker helps contributors quickly identify broken registrations, missing theme integrations, and configuration regressions without requiring additional build tools or CI setup.
+
+---
+
 ## Contributing
 
 Contributions are welcome, whether you're fixing bugs, improving documentation, or building new tools.
