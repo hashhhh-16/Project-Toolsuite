@@ -19,36 +19,51 @@ async function runHealthScan() {
 
     let passed = 0;
     let failed = 0;
+    let missingCss = 0;
+    let missingJs = 0;
 
     for (const tool of tools) {
       try {
-        const toolResponse = await fetch(`../../${tool.path}`, {
-          method: "HEAD",
-        });
+        const pageResponse = await fetch(`../../${tool.path}`);
 
-        const status = toolResponse.ok ? "PASS" : "FAIL";
+        const html = await pageResponse.text();
 
-        if (toolResponse.ok) {
-          passed++;
+        const pageStatus = pageResponse.ok ? "PASS" : "FAIL";
+
+        const hasThemeCss = html.includes("theme.css");
+        const hasThemeJs = html.includes("theme.js");
+
+        if (!hasThemeCss) {
+            missingCss++;
+        }
+
+        if (!hasThemeJs) {
+            missingJs++;
+        }
+
+        const cssStatus = hasThemeCss ? "PASS" : "FAIL";
+
+        const jsStatus = hasThemeJs ? "PASS" : "FAIL";
+
+        if (pageResponse.ok) {
+        passed++;
         } else {
-          failed++;
+        failed++;
         }
 
         reportData.push({
-          tool: tool.name,
-          path: tool.path,
-          status,
-          message: toolResponse.ok
-            ? "Tool page found"
-            : `HTTP ${toolResponse.status}`,
+        tool: tool.name,
+        path: tool.path,
+        pageStatus,
+        cssStatus,
+        jsStatus,
         });
 
         addRow(
-          tool.name,
-          status,
-          toolResponse.ok
-            ? "Tool page found"
-            : `HTTP ${toolResponse.status}`
+        tool.name,
+        pageStatus,
+        cssStatus,
+        jsStatus
         );
       } catch (error) {
         failed++;
@@ -68,8 +83,12 @@ async function runHealthScan() {
       }
     }
 
-    summary.textContent =
-      `Scan Complete — ${passed} Passed, ${failed} Failed`;
+    summary.innerHTML = `
+        <strong>Tools Scanned:</strong> ${tools.length}<br>
+        <strong>Pages Missing:</strong> ${failed}<br>
+        <strong>Missing Theme CSS:</strong> ${missingCss}<br>
+        <strong>Missing Theme JS:</strong> ${missingJs}
+    `;
 
     downloadBtn.disabled = false;
 
@@ -99,13 +118,19 @@ function extractTools(html) {
   return tools;
 }
 
-function addRow(name, status, message) {
+function addRow(
+  name,
+  pageStatus,
+  cssStatus,
+  jsStatus
+) {
   const row = document.createElement("tr");
 
   row.innerHTML = `
     <td>${name}</td>
-    <td>${status}</td>
-    <td>${message}</td>
+    <td>${pageStatus}</td>
+    <td>${cssStatus}</td>
+    <td>${jsStatus}</td>
   `;
 
   resultsBody.appendChild(row);
