@@ -1,0 +1,74 @@
+const tools = [
+  {
+    name: "JSON Formatter",
+    path: "../json-formatter/json-formatter.html",
+  },
+  {
+    name: "OCR Tool",
+    path: "../ocr/ocr.html",
+  },
+  {
+    name: "Unit Converter",
+    path: "../unit-converter/unit-converter.html",
+  },
+];
+
+const runScanBtn = document.getElementById("runScanBtn");
+const resultsBody = document.getElementById("resultsBody");
+const summary = document.getElementById("summary");
+
+runScanBtn.addEventListener("click", runHealthScan);
+
+async function runHealthScan() {
+  resultsBody.innerHTML = "";
+
+  let passed = 0;
+  let failed = 0;
+
+  for (const tool of tools) {
+    try {
+      const response = await fetch(tool.path, {
+        method: "HEAD",
+      });
+
+      const status = response.ok ? "PASS" : "FAIL";
+
+      if (response.ok) {
+        passed++;
+      } else {
+        failed++;
+      }
+
+      addRow(
+        tool.name,
+        status,
+        response.ok
+          ? "Tool page found"
+          : `HTTP ${response.status}`
+      );
+    } catch (error) {
+      failed++;
+
+      addRow(
+        tool.name,
+        "FAIL",
+        "Unable to reach tool page"
+      );
+    }
+  }
+
+  summary.textContent =
+    `Scan Complete — ${passed} Passed, ${failed} Failed`;
+}
+
+function addRow(name, status, message) {
+  const row = document.createElement("tr");
+
+  row.innerHTML = `
+    <td>${name}</td>
+    <td>${status}</td>
+    <td>${message}</td>
+  `;
+
+  resultsBody.appendChild(row);
+}

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tool Health Checker</title>
+
+    <link rel="stylesheet" href="../../theme.css">
+    <link rel="stylesheet" href="./health-checker.css">
+</head>
+<body>
+
+    <div class="container">
+        <h1>Tool Health Checker</h1>
+
+        <p>
+            Validate registered tools, assets, and project health.
+        </p>
+
+        <button id="runScanBtn">
+            Run Health Scan
+        </button>
+
+        <div id="summary">
+            No scan executed.
+        </div>
+
+        <table id="resultsTable">
+            <thead>
+                <tr>
+                    <th>Tool</th>
+                    <th>Status</th>
+                    <th>Message</th>
+                </tr>
+            </thead>
+
+            <tbody id="resultsBody">
+            </tbody>
+        </table>
+
+        <button id="downloadJsonBtn" disabled>
+            Download JSON Report
+        </button>
+    </div>
+
+    <script src="../../theme.js"></script>
+    <script src="./health-checker.js"></script>
+
+</body>
+</html>
